@@ -41,18 +41,18 @@ export default function App({
 
   return (
     <GlobalLayout>
-      {/* Link Navigation */}
+      {/* Link Navigation
       <Link href={'/'}>index</Link>
       &nbsp;
-      {/* 해당하는 페이지는 프리패칭 적용하지 않음 */}
+      해당하는 페이지는 프리패칭 적용하지 않음
       <Link href={'/search'} prefetch={false}>
         search
       </Link>
       &nbsp;
-      <Link href={'/book/1'}>book/1</Link>
-      <div>
+      <Link href={'/book/1'}>book/1</Link> */}
+      {/* <div>
         <button onClick={onClickButton}>/test 페이지로 이동</button>
-      </div>
+      </div> */}
       {getLayout(<Component {...pageProps} />)}
     </GlobalLayout>
   );
