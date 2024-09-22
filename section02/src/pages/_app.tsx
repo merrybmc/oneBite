@@ -2,11 +2,24 @@ import '@/styles/globals.css';
 import type { AppProps } from 'next/app';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { ReactNode, useEffect } from 'react';
 import GlobalLayout from './../components/global-layout';
+import { NextPage } from 'next';
 
-export default function App({ Component, pageProps }: AppProps) {
+type NextPageWithLayout = NextPage & {
+  getLayout?: (page: ReactNode) => ReactNode;
+};
+
+export default function App({
+  Component,
+  pageProps,
+}: AppProps & {
+  // App Component가 전달받는 props의 타입을 확장
+  Component: NextPageWithLayout;
+}) {
   const router = useRouter();
+
+  const getLayout = Component.getLayout ?? ((page: ReactNode) => page);
 
   const onClickButton = () => {
     /* Programmatic Navigation */
@@ -40,7 +53,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <div>
         <button onClick={onClickButton}>/test 페이지로 이동</button>
       </div>
-      <Component {...pageProps} />
+      {getLayout(<Component {...pageProps} />)}
     </GlobalLayout>
   );
 }
