@@ -1,6 +1,16 @@
 import { useRouter } from 'next/router';
 
-export default function Page() {
+export default function Page({
+  id,
+  title,
+  releaseDate,
+  company,
+  genres,
+  subTitle,
+  description,
+  runtime,
+  posterImgUrl,
+}) {
   const router = useRouter();
 
   const { id } = router.query;
