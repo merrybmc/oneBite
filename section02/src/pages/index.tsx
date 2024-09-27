@@ -12,7 +12,7 @@ export default function Home() {
       <h3>지금 가장 추천하는 영화</h3>
       <section className={style.recommendtab}>
         {movies.map((movie) => (
-          <MovieItem tabState='recommend' key={movie.id} {...movie} />
+          <MovieItem tabState='bigTile' key={movie.id} {...movie} />
         ))}
         {/* {books.map((book) => (
           <BookItem key={book.id} {...book} />
