@@ -7,3 +7,17 @@
 .container h3 {
   margin-bottom: 0px;
 }
+
+.recommendtab {
+  display: flex;
+  gap: 20px;
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+
+.alltab {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
