@@ -1,14 +1,40 @@
 import SearchableLayout from '@/components/searchable-layout';
 import style from './index.module.css';
-import { ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
 import books from '@/mock/books.json';
 import BookItem from '@/components/book-item';
 import movies from '@/mock/dummy.json';
 import MovieItem from '@/components/movie-item';
+import { InferGetServerSidePropsType } from 'next';
 
-export default function Home() {
+// SSR 사전 렌더링
+// 해당 페이지는 앞으로 SSR로 렌더링
+export const getServerSideProps = () => {
+  // 페이지 역할을 컴포넌트보다 먼저 실행이 되어서
+  // 해당 컴포넌트에 필요한 데이터를 미리 불러오는 함수
+  // 사전 렌더링을 하는 과정에서 딱 한 번만 실행
+  // 서버 측에서만 실행이 되는 함수
+
+  const data = 'Hello';
+
+  return {
+    props: {
+      data,
+    },
+  };
+};
+
+// InferGetServerSidePropsType
+// getServerSideProps 함수의 반환 값의 타입을 자동으로 추론
+export default function Home({ data }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  useEffect(() => {
+    // SSR은 mount가 된 이후 window를 console로 확인 가능
+    console.log(window);
+  }, []);
+
   return (
     <div className={style.container}>
+      <p>{data}</p>
       <h3>지금 가장 추천하는 영화</h3>
       <section className={style.recommendtab}>
         {movies.map((movie) => (
