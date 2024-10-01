@@ -5,30 +5,14 @@ import books from '@/mock/books.json';
 import BookItem from '@/components/book-item';
 import movies from '@/mock/dummy.json';
 import MovieItem from '@/components/movie-item';
-import { InferGetServerSidePropsType } from 'next';
+import { InferGetServerSidePropsType, InferGetStaticPropsType } from 'next';
 import fetchBooks from '@/lib/fetch-books';
 import fetchRandomBooks from '@/lib/fetch-random-books';
 
-// SSR 사전 렌더링
-// 해당 페이지는 앞으로 SSR로 렌더링
-export const getServerSideProps = async () => {
-  // 페이지 역할을 컴포넌트보다 먼저 실행이 되어서
-  // 해당 컴포넌트에 필요한 데이터를 미리 불러오는 함수
-  // 사전 렌더링을 하는 과정에서 딱 한 번만 실행
-  // 서버 측에서만 실행이 되는 함수
+// SSG 렌더링
+export const getStaticProps = async () => {
+  console.log('인덱스 페이지');
 
-  // const data = 'Hello';
-
-  // return {
-  //   props: {
-  //     data,
-  //   },
-  // };
-
-  // const allBooks = await fetchBooks();
-  // const recoBooks = await fetchRandomBooks();
-
-  // 병렬로 불러오기
   const [allBooks, recoBooks] = await Promise.all([fetchBooks(), fetchRandomBooks()]);
 
   return {
@@ -39,12 +23,49 @@ export const getServerSideProps = async () => {
   };
 };
 
+// SSR 사전 렌더링
+// 해당 페이지는 앞으로 SSR로 렌더링
+// export const getServerSideProps = async () => {
+//   // 페이지 역할을 컴포넌트보다 먼저 실행이 되어서
+//   // 해당 컴포넌트에 필요한 데이터를 미리 불러오는 함수
+//   // 사전 렌더링을 하는 과정에서 딱 한 번만 실행
+//   // 서버 측에서만 실행이 되는 함수
+
+//   // const data = 'Hello';
+
+//   // return {
+//   //   props: {
+//   //     data,
+//   //   },
+//   // };
+
+//   // const allBooks = await fetchBooks();
+//   // const recoBooks = await fetchRandomBooks();
+
+//   // 병렬로 불러오기
+//   const [allBooks, recoBooks] = await Promise.all([fetchBooks(), fetchRandomBooks()]);
+
+//   return {
+//     props: {
+//       allBooks,
+//       recoBooks,
+//     },
+//   };
+// };
+
+// SSR
 // InferGetServerSidePropsType
 // getServerSideProps 함수의 반환 값의 타입을 자동으로 추론
+// export default function Home({
+//   allBooks,
+//   recoBooks,
+// }: InferGetServerSidePropsType<typeof getServerSideProps>)
+
+// SSG
 export default function Home({
   allBooks,
   recoBooks,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+}: InferGetStaticPropsType<typeof getStaticProps>) {
   useEffect(() => {
     // SSR은 mount가 된 이후 window를 console로 확인 가능
     console.log(window);
