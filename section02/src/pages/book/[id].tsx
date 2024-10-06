@@ -8,6 +8,7 @@ import {
   InferGetStaticPropsType,
 } from 'next';
 import fetchOneBook from '@/lib/fetch-one-book';
+import { notFound } from 'next/navigation';
 
 export const getStaticPaths = () => {
   return {
@@ -18,15 +19,32 @@ export const getStaticPaths = () => {
       { params: { id: '4' } },
     ],
     // 대비책 예외상황
+    // false
     // id가 1, 2, 3, 4 이 아닐 경우 없는 페이지 취급
-    fallback: false,
+    // fallback: false,
+
+    // SSR + SSG 결합한 형태처럼 작동
+    // 동적인 페이지를 구현할 때 빌드 타임에 모든 id를 불러오기가 어려운 상황일 때
+    // 데이터를 없는 버전의 페이지일 경우 불러오는데 로딩이 발생
+    // fallback: 'blocking',
+
+    // 빌드 타임에 생성에 생성해놓지 않은 페이지를
+    // block처럼 SSR + SSG 결합한 형태처럼 작동
+    // 데이터가 없는 버전의 페이지일 경우 로딩 대신 일단 먼저 불러와서 보여줌
+    fallback: 'true',
   };
 };
 
 // SSG
 export const getStaticProps = async (context: GetStaticPropsContext) => {
+  const { id } = context.params!;
+
+  const book = await fetchOneBook(Number(id));
+
   return {
-    props: {},
+    props: {
+      book,
+    },
   };
 };
 
@@ -44,6 +62,18 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
 export default function Page({ book }: InferGetStaticPropsType<typeof getStaticProps>) {
   // SSR
   // export default function Page({ book }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+
+  const router = useRouter();
+
+  // fallback true일 경우 데이터 대신 우선 보여주는 페이지
+  if (router.isFallback) return '로딩중입니다.';
+
+  if (!book) {
+    return {
+      notFound: true,
+    };
+  }
+
   if (!book) return '문제가 발생하였습니다. 다시 시도해주세요.';
 
   const { id, title, subTitle, description, author, publisher, coverImgUrl } = book;
