@@ -1,19 +1,49 @@
 import { useRouter } from 'next/router';
 import style from './[id].module.css';
 import { getServerSideProps } from './../index';
-import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
+import {
+  GetServerSidePropsContext,
+  GetStaticPropsContext,
+  InferGetServerSidePropsType,
+  InferGetStaticPropsType,
+} from 'next';
 import fetchOneBook from '@/lib/fetch-one-book';
 
-export const getServerSideProps = async (context: GetServerSidePropsContext) => {
-  const { id } = context.params!;
-
-  const book = await fetchOneBook(Number(id));
+export const getStaticPaths = () => {
   return {
-    props: { book },
+    paths: [
+      { params: { id: '1' } },
+      { params: { id: '2' } },
+      { params: { id: '3' } },
+      { params: { id: '4' } },
+    ],
+    // 대비책 예외상황
+    // id가 1, 2, 3, 4 이 아닐 경우 없는 페이지 취급
+    fallback: false,
   };
 };
 
-export default function Page({ book }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+// SSG
+export const getStaticProps = async (context: GetStaticPropsContext) => {
+  return {
+    props: {},
+  };
+};
+
+// SSR
+// export const getServerSideProps = async (context: GetServerSidePropsContext) => {
+//   const { id } = context.params!;
+
+//   const book = await fetchOneBook(Number(id));
+//   return {
+//     props: { book },
+//   };
+// };
+
+// SSG
+export default function Page({ book }: InferGetStaticPropsType<typeof getStaticProps>) {
+  // SSR
+  // export default function Page({ book }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   if (!book) return '문제가 발생하였습니다. 다시 시도해주세요.';
 
   const { id, title, subTitle, description, author, publisher, coverImgUrl } = book;
