@@ -20,6 +20,8 @@ export const getStaticProps = async () => {
       allBooks,
       recoBooks,
     },
+    // ISR
+    revalidate: 3,
   };
 };
 
